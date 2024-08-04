@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const auth = require('../middleware/auth'); // Ensure the correct path to your middleware
 
 // User registration route
 router.post('/register', async (req, res) => {
@@ -43,17 +44,18 @@ router.post('/login', async (req, res) => {
 });
 
 // User profile update route
-router.post('/updateProfile', async (req, res) => {
-    const { token, fullName, bloodType, dob, guardianPhoneNumber, address, gender, medicalHistory } = req.body;
+router.post('/updateProfile', auth, async (req, res) => {
+    const { fullName, bloodType, dob, guardianPhoneNumber, address, gender, medicalHistory } = req.body;
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = decoded.userId;
+        const userId = req.user; // Access the user ID from the middleware
 
+        // Find the user by ID
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ msg: 'User not found' });
         }
 
+        // Update user fields
         user.fullName = fullName || user.fullName;
         user.bloodType = bloodType || user.bloodType;
         user.dob = dob || user.dob;
@@ -62,6 +64,7 @@ router.post('/updateProfile', async (req, res) => {
         user.gender = gender || user.gender;
         user.medicalHistory = medicalHistory || user.medicalHistory;
 
+        // Save the updated user
         await user.save();
         res.json({ msg: 'User profile updated successfully' });
     } catch (err) {
