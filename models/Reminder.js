@@ -11,7 +11,7 @@ const ReminderSchema = new mongoose.Schema({
         required: true
     },
     dosage: {
-        type: Number,
+        type: String,
         required: true
     },
     numOfDays: {
