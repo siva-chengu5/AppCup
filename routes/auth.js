@@ -3,7 +3,6 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const auth = require('../middleware/auth'); // Ensure the correct path to your middleware
 
 // User registration route
 router.post('/register', async (req, res) => {
@@ -44,33 +43,29 @@ router.post('/login', async (req, res) => {
 });
 
 // User profile update route
-router.post('/updateProfile', auth, async (req, res) => {
-    const { fullName, bloodType, dob, guardianPhoneNumber, address, gender, medicalHistory } = req.body;
+router.post('/updateProfile', async (req, res) => {
+    const { token, fullName, bloodType, dob, guardianPhoneNumber, address, gender, medicalHistory } = req.body;
     try {
-        const userId = req.user.userId; // Access the user ID from the middleware
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.userId;
 
-        // Find the user by ID and update
-        const user = await User.findByIdAndUpdate(userId, 
-            { 
-                fullName, 
-                bloodType, 
-                dob, 
-                guardianPhoneNumber, 
-                address, 
-                gender, 
-                medicalHistory 
-            }, 
-            { new: true, runValidators: true }
-        );
-
+        const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ msg: 'User not found' });
         }
 
-        res.json({ msg: 'User profile updated successfully', user });
+        user.fullName = fullName || user.fullName;
+        user.bloodType = bloodType || user.bloodType;
+        user.dob = dob || user.dob;
+        user.guardianPhoneNumber = guardianPhoneNumber || user.guardianPhoneNumber;
+        user.address = address || user.address;
+        user.gender = gender || user.gender;
+        user.medicalHistory = medicalHistory || user.medicalHistory;
+
+        await user.save();
+        res.json({ msg: 'User profile updated successfully' });
     } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ msg: 'Server error' });
+        res.status(500).send('Server error');
     }
 });
 
