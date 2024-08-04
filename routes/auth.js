@@ -47,28 +47,30 @@ router.post('/login', async (req, res) => {
 router.post('/updateProfile', auth, async (req, res) => {
     const { fullName, bloodType, dob, guardianPhoneNumber, address, gender, medicalHistory } = req.body;
     try {
-        const userId = req.user; // Access the user ID from the middleware
+        const userId = req.user.userId; // Access the user ID from the middleware
 
-        // Find the user by ID
-        const user = await User.findById(userId);
+        // Find the user by ID and update
+        const user = await User.findByIdAndUpdate(userId, 
+            { 
+                fullName, 
+                bloodType, 
+                dob, 
+                guardianPhoneNumber, 
+                address, 
+                gender, 
+                medicalHistory 
+            }, 
+            { new: true, runValidators: true }
+        );
+
         if (!user) {
             return res.status(404).json({ msg: 'User not found' });
         }
 
-        // Update user fields
-        user.fullName = fullName || user.fullName;
-        user.bloodType = bloodType || user.bloodType;
-        user.dob = dob || user.dob;
-        user.guardianPhoneNumber = guardianPhoneNumber || user.guardianPhoneNumber;
-        user.address = address || user.address;
-        user.gender = gender || user.gender;
-        user.medicalHistory = medicalHistory || user.medicalHistory;
-
-        // Save the updated user
-        await user.save();
-        res.json({ msg: 'User profile updated successfully' });
+        res.json({ msg: 'User profile updated successfully', user });
     } catch (err) {
-        res.status(500).send('Server error');
+        console.error(err.message);
+        res.status(500).json({ msg: 'Server error' });
     }
 });
 
