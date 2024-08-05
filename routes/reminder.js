@@ -16,7 +16,14 @@ router.post('/add', auth, async (req, res) => {
             numOfTimes
         });
        // await reminder.save();
-        res.json(reminder);
+
+       console.log("json => " + reminder);
+        try {
+            res.json(reminder);
+        }
+        catch {
+            console.log("Bad json");
+        }
     } catch (err) {
         res.status(500).send('Server error');
     }
