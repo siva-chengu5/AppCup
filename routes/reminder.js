@@ -17,9 +17,11 @@ router.post('/add', auth, async (req, res) => {
         });
        // await reminder.save();
 
-       console.log("json => " + reminder);
+       var json = JSON.stringify(reminder);
+
+       console.log("json => " + json);
         try {
-            res.json(reminder);
+            res.json(json);
         }
         catch {
             console.log("Bad json");
