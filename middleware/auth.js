@@ -16,6 +16,7 @@ module.exports = function (req, res, next) {
         
         // Add user from payload
         req.user = decoded;
+        res.json({ AuthToken: token}).status(200);
         next();
     } catch (err) {
         console.error('Token verification failed:', err.message);
