@@ -1,1 +1,58 @@
-node_modules
+# Ignore all user profile directories
+.cache/
+.gitconfig
+.gradle/
+.lesshst
+.p2/
+.vscode/
+AppData/
+Contacts/
+Documents/
+Downloads/
+Favorites/
+IntelGraphicsProfiles/
+Links/
+Music/
+NTUSER.DAT*
+OneDrive/
+Procfile
+Saved Games/
+Searches/
+StudioProjects/
+Videos/
+_netrc
+c++projects/
+dev/
+eclipse-workspace/
+eclipse/
+flutter_app/
+
+# Ignore Node.js dependencies
+node_modules/
+
+# Ignore system files
+ntuser.dat.LOG1
+ntuser.dat.LOG2
+ntuser.ini
+
+# Ignore package manager files (if you're using npm)
+package-lock.json
+
+# Ignore other files if needed
+*.log
+# Ignore system files
+/AppData/
+/Application Data/
+/Cookies/
+/Documents/My Music/
+/Documents/My Pictures/
+/Documents/My Videos/
+/Local Settings/
+/My Documents/
+/NetHood/
+/PrintHood/
+/Recent/
+/SendTo/
+/Start Menu/
+/Templates/
+
